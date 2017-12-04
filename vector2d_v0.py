@@ -2,6 +2,7 @@
 
 from array import array
 import math
+import itertools
 
 
 class Vector2d:
@@ -31,8 +32,30 @@ class Vector2d:
     def __abs__(self):  # 9
         return math.hypot(self.x, self.y)
 
+    def __neg__(self):
+        return Vector2d(-x for x in self)
+
+    def __pos__(self):
+        return Vector2d(self)
+
     def __bool__(self): # 10
         return bool(abs(self))
+
+    def __add__(self, other):
+        try:
+            pairs = itertools.zip_longest(self, other, fillvalue=0.0)
+            return Vector2d(a+b for a, b in pairs)
+        except TypeError:
+            return NotImplemented
+
+    def __radd__(self, other):
+        return self + other
+
+    def __mul__(self, scalar):
+        return Vector2d(n * scalar for n in self)
+
+    def __rmul__(self, scalar):
+        return self * scalar
 
     def __format__(self, fmt_spec=''):
         if fmt_spec.endswith('p'):
